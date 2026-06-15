@@ -18,7 +18,7 @@ export const SimulationControls: React.FC<SimulationControlsProps> = ({
   onUpdateElevatorProperty,
 }) => {
   const [selectedElevatorId, setSelectedElevatorId] = React.useState<string>(elevators[0]?.id || '');
-  const [isCollapsed, setIsCollapsed] = React.useState(false);
+  const [isCollapsed, setIsCollapsed] = React.useState(() => window.innerWidth <= 640);
 
   const selectedElevator = elevators.find((e) => e.id === selectedElevatorId);
 

@@ -885,7 +885,7 @@ body {
   width: 300px;
   z-index: 100;
   border-radius: 16px 0 0 16px;
-  border-right: none;
+  border-right: none !important;
   transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   display: flex;
   flex-direction: row;
@@ -906,7 +906,7 @@ body {
   transform: translateY(-50%);
   width: 36px;
   padding: 14px 8px;
-  background: var(--bg-card);
+  background: rgba(13, 17, 34, 0.92);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--border-light);
@@ -919,13 +919,13 @@ body {
   cursor: pointer;
   color: var(--text-secondary);
   transition: var(--transition-smooth);
-  box-shadow: -4px 0 16px rgba(0, 0, 0, 0.4);
+  box-shadow: -4px 0 16px rgba(0, 0, 0, 0.5);
 }
 
 .controls-toggle-tab:hover {
   color: var(--color-accent);
-  background: rgba(20, 26, 50, 0.95);
-  border-color: rgba(56, 189, 248, 0.25);
+  background: rgba(20, 26, 50, 0.98);
+  border-color: rgba(56, 189, 248, 0.3);
 }
 
 .tab-icon {
@@ -951,6 +951,12 @@ body {
   display: flex;
   flex-direction: column;
   border-radius: 16px 0 0 16px;
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-light);
+  border-right: none;
+  box-shadow: -8px 0 32px rgba(0, 0, 0, 0.5);
   scrollbar-width: thin;
   scrollbar-color: rgba(255,255,255,0.1) transparent;
 }
@@ -966,7 +972,7 @@ body {
   border-bottom: 1px solid rgba(255,255,255,0.06);
 }
 
-/* Header row – acts as expand toggle on mobile */
+/* Header row */
 .controls-panel-header {
   width: 100%;
   display: flex;
@@ -982,6 +988,78 @@ body {
 
 .controls-panel-header:hover {
   background: rgba(255,255,255,0.03);
+}
+
+/* On mobile: floating panel becomes bottom sheet */
+@media (max-width: 768px) {
+  .controls-floating-panel {
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    width: 100%;
+    transform: translateY(0);
+    border-radius: 16px 16px 0 0;
+    max-height: 70vh;
+  }
+
+  /* Collapsed: show only the handle bar at the bottom */
+  .controls-floating-panel.collapsed {
+    transform: translateY(calc(100% - 48px));
+  }
+
+  .controls-toggle-tab {
+    position: static;
+    left: auto;
+    top: auto;
+    transform: none;
+    width: 100%;
+    flex-direction: row;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    border-radius: 16px 16px 0 0;
+    border-right: 1px solid var(--border-light);
+    border-left: 1px solid var(--border-light);
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    border-top: 1px solid var(--border-light);
+    box-shadow: none;
+  }
+
+  /* On mobile show a drag-handle notch above the icon */
+  .controls-toggle-tab::before {
+    content: '';
+    position: absolute;
+    top: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 32px;
+    height: 3px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 9999px;
+  }
+
+  .tab-chevron {
+    transform: rotate(-90deg);
+  }
+  .tab-chevron.rotated {
+    transform: rotate(90deg);
+  }
+
+  .controls-floating-body {
+    border-radius: 0;
+    border-right: 1px solid var(--border-light);
+    border-left: 1px solid var(--border-light);
+    border-top: none;
+    border-bottom: none;
+    box-shadow: none;
+    background: transparent;
+  }
+
+  .elevator-tab-grid {
+    grid-template-columns: repeat(5, 1fr);
+  }
 }
 
 .controls-panel-title {
