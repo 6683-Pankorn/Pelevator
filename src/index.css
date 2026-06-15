@@ -93,29 +93,16 @@ body {
   text-shadow: 0 0 10px rgba(56, 189, 248, 0.6);
 }
 
-/* Dashboard Layout */
+/* Desktop: full width (floating panel handles sidebar) */
 .dashboard-container {
   min-height: 100vh;
   padding: 2rem;
   max-width: 1600px;
   margin: 0 auto;
   width: 100%;
-}
-
-/* Desktop: side-by-side layout with sidebar */
-.layout-with-sidebar {
-  display: grid;
-  grid-template-columns: 1fr 360px;
-  grid-template-rows: auto;
-  gap: 2rem;
-  align-items: start;
-}
-
-.dashboard-main-column {
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  min-width: 0;
 }
 
 /* Sticky sidebar that stays visible while scrolling */
@@ -139,20 +126,14 @@ body {
 }
 
 @media (max-width: 900px) {
-  .layout-with-sidebar {
-    grid-template-columns: 1fr;
-  }
-  .dashboard-side-column {
-    position: static;
-    order: -1; /* put controls above on tablet */
+  .dashboard-container {
+    padding: 1.25rem;
   }
 }
 
 @media (max-width: 640px) {
   .dashboard-container {
     padding: 0.75rem;
-  }
-  .layout-with-sidebar {
     gap: 1rem;
   }
 
@@ -200,11 +181,6 @@ body {
   }
   .elevator-wrapper.mobile-active {
     display: block;
-  }
-
-  /* Side column becomes a floating bottom sheet feel on mobile */
-  .dashboard-side-column {
-    order: 2;
   }
 }
 
@@ -897,12 +873,97 @@ body {
 }
 
 /* ===================================================
-   Control Panel – Sidebar / Mobile Drawer
+   Control Panel – Floating Overlay Panel
    =================================================== */
-.controls-panel {
+
+/* Floating container: fixed to right edge of viewport */
+.controls-floating-panel {
+  position: fixed;
+  top: 50%;
+  right: 0;
+  transform: translateY(-50%) translateX(0);
+  width: 300px;
+  z-index: 100;
+  border-radius: 16px 0 0 16px;
+  border-right: none;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: row;
+  overflow: visible;
   padding: 0;
-  overflow: hidden;
+}
+
+/* When collapsed, slide fully off screen to the right (leave only the tab visible) */
+.controls-floating-panel.collapsed {
+  transform: translateY(-50%) translateX(calc(100% - 36px));
+}
+
+/* Toggle tab – the grabbable strip on the left edge of the panel */
+.controls-toggle-tab {
+  position: absolute;
+  left: -36px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  padding: 14px 8px;
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-light);
+  border-right: none;
+  border-radius: 12px 0 0 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  color: var(--text-secondary);
+  transition: var(--transition-smooth);
+  box-shadow: -4px 0 16px rgba(0, 0, 0, 0.4);
+}
+
+.controls-toggle-tab:hover {
+  color: var(--color-accent);
+  background: rgba(20, 26, 50, 0.95);
+  border-color: rgba(56, 189, 248, 0.25);
+}
+
+.tab-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.tab-chevron {
+  width: 12px;
+  height: 12px;
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tab-chevron.rotated {
+  transform: rotate(180deg);
+}
+
+/* Scrollable inner content */
+.controls-floating-body {
   width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  border-radius: 16px 0 0 16px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.1) transparent;
+}
+
+/* Static (non-clickable) header inside the panel */
+.static-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  background: transparent;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
 }
 
 /* Header row – acts as expand toggle on mobile */
@@ -936,24 +997,6 @@ body {
   width: 1rem;
   height: 1rem;
   color: var(--color-accent);
-}
-
-/* Chevron arrow – rotates on expand */
-.controls-chevron {
-  width: 1rem;
-  height: 1rem;
-  color: var(--text-muted);
-  transition: transform 0.3s ease;
-  /* hidden on desktop (always expanded) */
-  display: none;
-}
-
-/* Panel body – always visible on desktop */
-.controls-panel-body {
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  border-top: 1px solid rgba(255,255,255,0.06);
 }
 
 /* Sections */
@@ -1177,32 +1220,56 @@ body {
   border-color: var(--border-light);
 }
 
-/* On mobile: chevron visible, body collapses by default */
+/* On mobile: floating panel becomes bottom sheet */
 @media (max-width: 640px) {
-  .controls-chevron {
-    display: block;
+  .controls-floating-panel {
+    position: fixed;
+    top: auto;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    width: 100%;
+    transform: translateY(0);
+    border-radius: 16px 16px 0 0;
+    border-right: 1px solid var(--border-light);
+    border-bottom: none;
+    max-height: 60vh;
   }
 
-  .controls-panel-body {
-    max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  .controls-floating-panel.collapsed {
+    transform: translateY(calc(100% - 44px));
   }
 
-  .controls-panel-body.expanded {
-    max-height: 1000px;
+  .controls-toggle-tab {
+    position: static;
+    left: auto;
+    top: auto;
+    transform: none;
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 0.75rem 1.25rem;
+    border-radius: 16px 16px 0 0;
+    border-right: none;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    box-shadow: none;
   }
 
-  .controls-chevron.rotated {
-    transform: rotate(180deg);
+  .tab-chevron {
+    transform: rotate(90deg);
+  }
+  .tab-chevron.rotated {
+    transform: rotate(-90deg);
+  }
+
+  .controls-floating-body {
+    border-radius: 0;
   }
 
   .elevator-tab-grid {
     grid-template-columns: repeat(5, 1fr);
   }
 }
-
-
 
 
 /* Footer layout */

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Play, Pause, RefreshCw, Power, Radio, DoorOpen, SlidersHorizontal, ChevronDown } from 'lucide-react';
+import { Play, Pause, RefreshCw, Power, Radio, DoorOpen, SlidersHorizontal, ChevronRight } from 'lucide-react';
 import type { Elevator } from './ElevatorShaft';
 
 interface SimulationControlsProps {
@@ -18,26 +18,33 @@ export const SimulationControls: React.FC<SimulationControlsProps> = ({
   onUpdateElevatorProperty,
 }) => {
   const [selectedElevatorId, setSelectedElevatorId] = React.useState<string>(elevators[0]?.id || '');
-  const [isMobileExpanded, setIsMobileExpanded] = React.useState(false);
+  const [isCollapsed, setIsCollapsed] = React.useState(false);
 
   const selectedElevator = elevators.find((e) => e.id === selectedElevatorId);
 
   return (
-    <div className="controls-panel glass-panel">
-      {/* Panel header – clickable on mobile to expand/collapse */}
+    <div className={`controls-floating-panel glass-panel ${isCollapsed ? 'collapsed' : ''}`}>
+      {/* Toggle tab on the left edge */}
       <button
-        className="controls-panel-header"
-        onClick={() => setIsMobileExpanded(!isMobileExpanded)}
-        aria-expanded={isMobileExpanded}
+        className="controls-toggle-tab"
+        onClick={() => setIsCollapsed(!isCollapsed)}
+        aria-label={isCollapsed ? 'Expand Control Panel' : 'Collapse Control Panel'}
+        title={isCollapsed ? 'Expand Control Panel' : 'Collapse Control Panel'}
       >
-        <span className="controls-panel-title">
-          <SlidersHorizontal className="controls-panel-icon" />
-          Control Panel
-        </span>
-        <ChevronDown className={`controls-chevron ${isMobileExpanded ? 'rotated' : ''}`} />
+        <SlidersHorizontal className="tab-icon" />
+        <ChevronRight className={`tab-chevron ${isCollapsed ? '' : 'rotated'}`} />
       </button>
 
-      <div className={`controls-panel-body ${isMobileExpanded ? 'expanded' : ''}`}>
+      {/* Panel content */}
+      <div className="controls-floating-body">
+        {/* Header */}
+        <div className="controls-panel-header static-header">
+          <span className="controls-panel-title">
+            <SlidersHorizontal className="controls-panel-icon" />
+            Control Panel
+          </span>
+        </div>
+
         {/* Simulation Master Buttons */}
         <div className="controls-section">
           <p className="controls-section-label">SIMULATION</p>

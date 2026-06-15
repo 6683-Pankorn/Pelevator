@@ -242,8 +242,7 @@ export default function App() {
   };
 
   return (
-    <div className="dashboard-container layout-with-sidebar">
-      <div className="dashboard-main-column">
+    <div className="dashboard-container">
         <header className="dashboard-header">
         <div className="header-brand">
           <div className="header-logo">
@@ -292,17 +291,14 @@ export default function App() {
         <footer className="dashboard-footer">
           Schneider Intelligent EMS © {new Date().getFullYear()} • Powered by Impeccable Design Pack
         </footer>
-      </div>
 
-      <aside className="dashboard-side-column">
-        <SimulationControls
-          elevators={elevators}
-          isSimulating={isSimulating}
-          onToggleSimulation={() => setIsSimulating(!isSimulating)}
-          onResetSimulation={handleResetSimulation}
-          onUpdateElevatorProperty={handleUpdateElevatorProperty}
-        />
-      </aside>
+      <SimulationControls
+        elevators={elevators}
+        isSimulating={isSimulating}
+        onToggleSimulation={() => setIsSimulating(!isSimulating)}
+        onResetSimulation={handleResetSimulation}
+        onUpdateElevatorProperty={handleUpdateElevatorProperty}
+      />
     </div>
   );
 }
